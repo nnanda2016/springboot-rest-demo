@@ -1,0 +1,14 @@
+server:
+  shutdown: graceful
+  port: 8001
+  error:
+    whitelable:
+      enabled: false
+
+logging:
+  file:
+    name: build/logs/app.log
+
+spring:
+  application:
+    name: SpringBoot Rest Demo
