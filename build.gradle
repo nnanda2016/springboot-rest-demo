@@ -1,0 +1,57 @@
+plugins {
+    id 'org.springframework.boot' version "${SPRING_BOOT_VERSION}"
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.gorylenko.gradle-git-properties' version '2.4.0'
+    id "io.freefair.lombok" version '6.5.1'
+}
+
+gitProperties {
+    keys = ['git.build.version','git.commit.id','git.commit.time','git.tags']
+}
+
+apply plugin: "java"
+apply plugin: "maven-publish"
+apply plugin: 'io.freefair.lombok'
+apply plugin: "idea"
+apply plugin: "eclipse"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    runtimeOnly 'com.h2database:h2'
+//    implementation "org.springframework.boot:spring-boot-starter-validation"
+//    implementation "org.springframework.boot:spring-boot-starter-actuator"
+//    implementation "org.springframework.boot:spring-boot-starter-security"
+
+    // configuration properties
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${SPRING_BOOT_VERSION}"
+
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation "org.apache.commons:commons-collections4:4.4"
+    implementation "org.apache.commons:commons-text:1.10.0"
+
+    // Testing
+    implementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+    }
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(Test).configureEach {
+    systemProperties['spring.test.context.cache.maxSize'] = 1
+}
+
+tasks.withType(Copy).all {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
